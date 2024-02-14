@@ -16,4 +16,9 @@ class IgViewModel @Inject constructor(
 
 ) : ViewModel() {
 
+    fun onSignup(username: String, email: String, pass: String): Unit {
+        if (username.isEmpty() || email.isEmpty() or pass.isEmpty()) {
+            return
+        }
+    }
 }
