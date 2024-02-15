@@ -1,7 +1,7 @@
 package com.example.instagramclonejetpackfirebase.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,12 +24,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.instagramclonejetpackfirebase.R
+import com.example.instagramclonejetpackfirebase.components.CommonProgressSpinner
 import com.example.instagramclonejetpackfirebase.viewmodel.IgViewModel
 
 @Preview(showBackground = true)
@@ -50,10 +50,14 @@ fun SignupScreen(navController: NavController?, vm: IgViewModel?): Unit {
     val focus = LocalFocusManager.current
 
     Box() {
+        if (vm?.inProcess?.value ?: false) {
+            CommonProgressSpinner()
+        }
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().clickable(
+                enabled = !(vm?.inProcess?.value)!! ) {  }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ig_logo), contentDescription = "logo",
@@ -103,6 +107,14 @@ fun SignupScreen(navController: NavController?, vm: IgViewModel?): Unit {
             }) {
                 Text(text = "SIGN UP")
             }
+            Text(text = "Already a user? Go to login ->",
+                color = Color.Blue,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        //           navigateTo(navController, DestinationScreen.Login)
+                    }
+            )
         }
     }
 

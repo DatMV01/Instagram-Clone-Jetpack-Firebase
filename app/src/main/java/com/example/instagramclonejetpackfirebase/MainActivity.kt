@@ -8,15 +8,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.instagramclonejetpackfirebase.components.ToastMessage
 import com.example.instagramclonejetpackfirebase.screen.SignupScreen
 import com.example.instagramclonejetpackfirebase.ui.theme.InstagramCloneJetpackFirebaseTheme
 import com.example.instagramclonejetpackfirebase.viewmodel.IgViewModel
@@ -61,8 +60,6 @@ fun InstagramApp() {
                 SignupScreen(navController = navController, vm = vm)
             }
         })
-
-
 }
 
 @Preview(showBackground = true)
@@ -74,14 +71,3 @@ fun GreetingPreview() {
 }
 
 
-@Composable
-fun ToastMessage(vm: IgViewModel): Unit {
-    val notifiState = vm.popupNotification.value;
-    val notifiMessage = notifiState?.getContentOrNull();
-
-    if (notifiMessage != null) {
-        Toast.makeText(LocalContext.current, notifiMessage, Toast.LENGTH_SHORT).show();
-    }
-
-
-}
