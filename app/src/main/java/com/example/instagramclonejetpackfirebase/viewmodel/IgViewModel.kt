@@ -30,12 +30,13 @@ class IgViewModel @Inject constructor(
     val popupNotification = mutableStateOf<Event<String>?>(null);
 
     init {
-//        auth.signOut()
+        // signOut automatically when app is starting
+        //  auth.signOut()
         val currentUser = auth.currentUser
         signedIn.value = currentUser != null
-        currentUser?.uid?.let { uid ->
-            getUserData(uid)
-        }
+//        currentUser?.uid?.let { uid ->
+//            getUserData(uid)
+//        }
     }
 
     fun onSignup(username: String, email: String, pass: String): Unit {
@@ -153,6 +154,6 @@ class IgViewModel @Inject constructor(
                 handleException(it, "Login Failed")
                 inProcess.value = false;
             }
-        },5000)
+        }, 5000)
     }
 }

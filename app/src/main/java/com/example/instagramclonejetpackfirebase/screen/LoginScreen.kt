@@ -38,7 +38,6 @@ import com.example.instagramclonejetpackfirebase.viewmodel.IgViewModel
 @Composable
 fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
 
-
     val usernameState = remember {
         mutableStateOf("")
     }
@@ -47,82 +46,87 @@ fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
         mutableStateOf("")
     }
 
-    val focus = LocalFocusManager.current
-
-    CheckSignedIn(vm = vm, navController = navController)
-
-     
-    Box() {
-        if (vm?.inProcess?.value ?: false) {
-            CommonProgressSpinner()
-        }
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(
-                    enabled = !(vm?.inProcess?.value)!!
-                ) { }
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ig_logo), contentDescription = "logo",
-                modifier = Modifier
-                    .width(250.dp)
-                    .padding(top = 16.dp)
-            )
-            Text(
-                text = "Login",
-                modifier = Modifier.padding(8.dp),
-                fontSize = 30.sp,
-                fontFamily = FontFamily.SansSerif
-            )
-            OutlinedTextField(
-                value = usernameState.value,
-                onValueChange = { usernameState.value = it },
-                modifier = Modifier.padding(8.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-
-                label = { Text(text = "Username") })
-
-            OutlinedTextField(
-                value = passState.value,
-                onValueChange = { passState.value = it },
-                modifier = Modifier.padding(8.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                label = { Text(text = "Password") },
-                visualTransformation = PasswordVisualTransformation()
-            )
-            Button(onClick = {
-                focus.clearFocus();
-                vm?.onSignIn(
-                    usernameState.value,
-                    passState.value
-                )
-
-            }) {
-                Text(text = "LOGIN")
-            }
-            Text(
-                text = "New here? Go to signup ->",
-                color = Color.Blue,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clickable {
-                        navigateTo(navController, Screen.Signup)
-                    }
-            )
-        }
-    }
-
-}
-
-@Composable
-fun CheckSignedIn(vm: IgViewModel, navController: NavController) {
     val alreadyLoggedIn = remember {
         mutableStateOf(false)
     }
+
     val signIn = vm.signedIn.value;
+
+    val focus = LocalFocusManager.current
+
+    if (signIn && !alreadyLoggedIn.value) {
+        // only check logged when the first time app launching
+        alreadyLoggedIn.value = true
+        navController.navigate(Screen.FeedScreen.route) {
+            popUpTo(0)// remove all screen from stack
+        }
+    } else {
+        Box() {
+            if (vm.inProcess.value ) {
+                CommonProgressSpinner()
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        enabled = !(vm.inProcess.value)
+                    ) { }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ig_logo), contentDescription = "logo",
+                    modifier = Modifier
+                        .width(250.dp)
+                        .padding(top = 16.dp)
+                )
+                Text(
+                    text = "Login",
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily.SansSerif
+                )
+                OutlinedTextField(
+                    value = usernameState.value,
+                    onValueChange = { usernameState.value = it },
+                    modifier = Modifier.padding(8.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+
+                    label = { Text(text = "Username") })
+
+                OutlinedTextField(
+                    value = passState.value,
+                    onValueChange = { passState.value = it },
+                    modifier = Modifier.padding(8.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    label = { Text(text = "Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+                Button(onClick = {
+                    focus.clearFocus();
+                    vm.onSignIn(
+                        usernameState.value,
+                        passState.value
+                    )
+
+                }) {
+                    Text(text = "LOGIN")
+                }
+                Text(
+                    text = "New here? Go to signup ->",
+                    color = Color.Blue,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            navigateTo(navController, Screen.Signup)
+                        }
+                )
+            }
+        }
+    }
+
+
 }
+
