@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +45,7 @@ fun SignupScreen(navController: NavController?, vm: IgViewModel?): Unit {
     val passState = remember {
         mutableStateOf("")
     }
+
 
     val focus = LocalFocusManager.current
 
@@ -67,21 +71,29 @@ fun SignupScreen(navController: NavController?, vm: IgViewModel?): Unit {
                 value = usernameState.value,
                 onValueChange = { usernameState.value = it },
                 modifier = Modifier.padding(8.dp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+
                 label = { Text(text = "Username") })
             OutlinedTextField(
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
                 modifier = Modifier.padding(8.dp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 label = { Text(text = "Email") })
 
             OutlinedTextField(
                 value = passState.value,
                 onValueChange = { passState.value = it },
                 modifier = Modifier.padding(8.dp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 label = { Text(text = "Password") },
                 visualTransformation = PasswordVisualTransformation()
             )
-            Button(onClick = { focus.clearFocus();
+            Button(onClick = {
+                focus.clearFocus();
                 vm?.onSignup(
                     usernameState.value,
                     emailState.value,

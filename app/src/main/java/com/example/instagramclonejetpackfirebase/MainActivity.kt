@@ -1,6 +1,8 @@
 package com.example.instagramclonejetpackfirebase
 
+import android.app.Notification
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -39,21 +42,26 @@ class MainActivity : ComponentActivity() {
 }
 
 
-sealed class DestinationScreen(val route: String){
-    object Signup: DestinationScreen("signup")
+sealed class DestinationScreen(val route: String) {
+    object Signup : DestinationScreen("signup")
 }
 
 @Composable
 fun InstagramApp() {
     val vm = hiltViewModel<IgViewModel>()
     val navController = rememberNavController();
-    
-    NavHost(navController = navController, startDestination =DestinationScreen.Signup.route , builder = {
-        composable(DestinationScreen.Signup.route){
-            SignupScreen(navController = navController, vm = vm)
-        }
-    })
-    
+
+    ToastMessage(vm = vm)
+
+    NavHost(
+        navController = navController,
+        startDestination = DestinationScreen.Signup.route,
+        builder = {
+            composable(DestinationScreen.Signup.route) {
+                SignupScreen(navController = navController, vm = vm)
+            }
+        })
+
 
 }
 
@@ -63,4 +71,17 @@ fun GreetingPreview() {
     InstagramCloneJetpackFirebaseTheme {
         InstagramApp()
     }
+}
+
+
+@Composable
+fun ToastMessage(vm: IgViewModel): Unit {
+    val notifiState = vm.popupNotification.value;
+    val notifiMessage = notifiState?.getContentOrNull();
+
+    if (notifiMessage != null) {
+        Toast.makeText(LocalContext.current, notifiMessage, Toast.LENGTH_SHORT).show();
+    }
+
+
 }
