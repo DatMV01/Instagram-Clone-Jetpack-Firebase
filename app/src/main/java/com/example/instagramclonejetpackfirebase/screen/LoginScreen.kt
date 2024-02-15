@@ -37,6 +37,8 @@ import com.example.instagramclonejetpackfirebase.viewmodel.IgViewModel
 @Preview(showBackground = true)
 @Composable
 fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
+
+
     val usernameState = remember {
         mutableStateOf("")
     }
@@ -47,6 +49,9 @@ fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
 
     val focus = LocalFocusManager.current
 
+    CheckSignedIn(vm = vm, navController = navController)
+
+     
     Box() {
         if (vm?.inProcess?.value ?: false) {
             CommonProgressSpinner()
@@ -92,11 +97,10 @@ fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
             )
             Button(onClick = {
                 focus.clearFocus();
-//                vm?.onSignup(
-//                    usernameState.value,
-//
-//                    passState.value
-//                )
+                vm?.onSignIn(
+                    usernameState.value,
+                    passState.value
+                )
 
             }) {
                 Text(text = "LOGIN")
@@ -113,4 +117,12 @@ fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
         }
     }
 
+}
+
+@Composable
+fun CheckSignedIn(vm: IgViewModel, navController: NavController) {
+    val alreadyLoggedIn = remember {
+        mutableStateOf(false)
+    }
+    val signIn = vm.signedIn.value;
 }

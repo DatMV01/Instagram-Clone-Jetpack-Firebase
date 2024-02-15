@@ -29,14 +29,13 @@ fun ToastMessage(vm: IgViewModel): Unit {
 @Composable
 @Preview(showBackground = true)
 fun CommonProgressSpinner(): Unit {
-  Row (
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.Center
-      ,modifier = Modifier
-          .fillMaxSize()
-          .alpha(0.5f)
-          .background(Color.LightGray)
-          .clickable(enabled = false) { }){
-      CircularProgressIndicator()
-  }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center, modifier = Modifier
+            .fillMaxSize()
+            .alpha(0.5f)
+            .background(Color.LightGray)
+            .clickable(enabled = false) { }) {
+        CircularProgressIndicator()
+    }
 }

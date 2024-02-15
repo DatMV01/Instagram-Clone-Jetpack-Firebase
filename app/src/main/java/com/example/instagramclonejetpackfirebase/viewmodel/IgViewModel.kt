@@ -38,36 +38,37 @@ class IgViewModel @Inject constructor(
         }
     }
 
-      fun onSignup(username: String, email: String, pass: String): Unit {
+    fun onSignup(username: String, email: String, pass: String): Unit {
         if (username.isEmpty() || email.isEmpty() or pass.isEmpty()) {
             handleException(custumMessage = "Please fill in all fields")
             return
         }
-          inProcess.value = true;
-          Handler(Looper.getMainLooper()).postDelayed({
-              // Fake waiting 5s
+        inProcess.value = true;
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Fake waiting 5s
 
-              db.collection(USERS).whereEqualTo("username", username)
-                  .get()
-                  .addOnSuccessListener { documents ->
-                      if (documents.size() > 0) {
-                          handleException(custumMessage = "Username already exists")
-                          inProcess.value = false
-                      } else {
-                          auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
-                              if (task.isSuccessful) {
-                                  signedIn.value = true
-                                  createOrUpdateProfile(username = username)
-                              } else {
-                                  handleException(task.exception, "Signup failed")
-                                  signedIn.value = false
-                              }
-                              inProcess.value = false;
+            db.collection(USERS).whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.size() > 0) {
+                        handleException(custumMessage = "Username already exists")
+                        inProcess.value = false
+                    } else {
+                        auth.createUserWithEmailAndPassword(email, pass)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    signedIn.value = true
+                                    createOrUpdateProfile(username = username)
+                                } else {
+                                    handleException(task.exception, "Signup failed")
+                                    signedIn.value = false
+                                }
+                                inProcess.value = false;
 
-                          }
-                      }
-                  }
-          }, 5000)
+                            }
+                    }
+                }
+        }, 5000)
     }
 
     private fun createOrUpdateProfile(
@@ -127,5 +128,31 @@ class IgViewModel @Inject constructor(
         val errorMsg = exception?.localizedMessage ?: "";
         val message = if (custumMessage.isEmpty()) errorMsg else "$custumMessage: $errorMsg"
         popupNotification.value = Event(message)
+    }
+
+    fun onSignIn(email: String, pass: String) {
+        if (email.isEmpty() or pass.isEmpty()) {
+            handleException(custumMessage = "Please fill in all fields")
+            return;
+        }
+
+        inProcess.value = true;
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    signedIn.value = true;
+                    inProcess.value = false;
+                    auth.currentUser?.uid?.let {
+                        getUserData(it)
+                    }
+                } else {
+                    handleException(it.exception, "Login Failed")
+                    inProcess.value = false; }
+            }.addOnFailureListener {
+                handleException(it, "Login Failed")
+                inProcess.value = false;
+            }
+        },5000)
     }
 }
