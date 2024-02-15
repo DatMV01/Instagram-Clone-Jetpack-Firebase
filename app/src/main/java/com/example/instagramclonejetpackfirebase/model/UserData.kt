@@ -7,6 +7,8 @@ data class UserData(    var userId: String? = null,
                         var bio: String? = null,
                         var following: List<String>? = null) {
 
+
+
     fun toMap() = mapOf(
         "userId" to userId,
         "name" to name,

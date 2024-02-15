@@ -7,6 +7,7 @@ import com.example.instagramclonejetpackfirebase.data.Event
 import com.example.instagramclonejetpackfirebase.model.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -34,13 +35,9 @@ class IgViewModel @Inject constructor(
         }
         inProcess.value = true;
 
-
-
-
         db.collection(USERS).whereEqualTo("username", username)
             .get()
             .addOnSuccessListener { documents ->
-                popupNotification.value = Event(documents.toString())
                 if (documents.size() > 0) {
                     handleException(custumMessage = "Username already exists")
                     inProcess.value = false
@@ -48,7 +45,7 @@ class IgViewModel @Inject constructor(
                     auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             signedIn.value = true
-                            // Create profile
+                            createOrUpdateProfile(username = username)
                         } else {
                             handleException(task.exception, "Signup failed")
                             signedIn.value = false
@@ -61,6 +58,46 @@ class IgViewModel @Inject constructor(
 
 
     }
+
+    private fun createOrUpdateProfile(
+        name: String? = null,
+        username: String? = null,
+        bio: String? = null,
+        imageUrl: String? = null
+    ) {
+
+        var uid = auth.currentUser?.uid;
+        val userData = UserData(
+            userId = uid,
+            name = name ?: userData.value?.name,
+            username = username ?: userData.value?.username,
+            bio = bio ?: userData.value?.bio,
+            imageUrl = imageUrl ?: userData.value?.imageUrl,
+            following = userData.value?.following
+        )
+
+        uid?.let {
+            inProcess.value = false;
+            db.collection(USERS).document(uid).get()
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        Log.i("userData", userData.toMap().toString())
+                        it.reference.update(userData.toMap())
+                            .addOnSuccessListener {
+                                this.userData.value = userData
+                            }
+                            .addOnFailureListener {
+                                handleException(it, "Cannot update user")
+                            }
+                    } else {
+                        db.collection(USERS).document(uid).set(userData)
+                        //    getUserData(uid)
+                        inProcess.value = false;
+                    }
+                }
+        }
+    }
+
 
     fun handleException(exception: Exception? = null, custumMessage: String = ""): Unit {
         exception?.printStackTrace();
