@@ -27,27 +27,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.instagramclonejetpackfirebase.R
 import com.example.instagramclonejetpackfirebase.components.CommonProgressSpinner
 import com.example.instagramclonejetpackfirebase.navigation.Screen
 import com.example.instagramclonejetpackfirebase.navigation.navigateTo
 import com.example.instagramclonejetpackfirebase.viewmodel.IgViewModel
 
+
 @Preview(showBackground = true)
 @Composable
-fun SignupScreen(navController: NavController, vm: IgViewModel?): Unit {
-
+fun LoginScreen(navController: NavController, vm: IgViewModel): Unit {
     val usernameState = remember {
         mutableStateOf("")
     }
-    val emailState = remember {
-        mutableStateOf("")
-    }
+
     val passState = remember {
         mutableStateOf("")
     }
-
 
     val focus = LocalFocusManager.current
 
@@ -71,7 +67,7 @@ fun SignupScreen(navController: NavController, vm: IgViewModel?): Unit {
                     .padding(top = 16.dp)
             )
             Text(
-                text = "SignUp",
+                text = "Login",
                 modifier = Modifier.padding(8.dp),
                 fontSize = 30.sp,
                 fontFamily = FontFamily.SansSerif
@@ -84,13 +80,6 @@ fun SignupScreen(navController: NavController, vm: IgViewModel?): Unit {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
 
                 label = { Text(text = "Username") })
-            OutlinedTextField(
-                value = emailState.value,
-                onValueChange = { emailState.value = it },
-                modifier = Modifier.padding(8.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                label = { Text(text = "Email") })
 
             OutlinedTextField(
                 value = passState.value,
@@ -103,25 +92,22 @@ fun SignupScreen(navController: NavController, vm: IgViewModel?): Unit {
             )
             Button(onClick = {
                 focus.clearFocus();
-                vm?.onSignup(
-                    usernameState.value,
-                    emailState.value,
-                    passState.value
-                )
+//                vm?.onSignup(
+//                    usernameState.value,
+//
+//                    passState.value
+//                )
 
             }) {
-                Text(text = "SIGN UP")
+                Text(text = "LOGIN")
             }
-            Text(text = "Already a user? Go to login ->",
+            Text(
+                text = "New here? Go to signup ->",
                 color = Color.Blue,
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-                        navController.navigate(Screen.LoginScreen.route) {
-                            popUpTo(navController.graph.findStartDestination().id);
-                            launchSingleTop = true
-                        };
-                        navigateTo(navController, Screen.LoginScreen)
+                        navigateTo(navController, Screen.Signup)
                     }
             )
         }

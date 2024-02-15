@@ -5,7 +5,6 @@ import android.os.Looper
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-
 import com.example.instagramclonejetpackfirebase.data.Event
 import com.example.instagramclonejetpackfirebase.model.UserData
 import com.google.firebase.auth.FirebaseAuth
@@ -13,7 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 const val USERS = "users"
